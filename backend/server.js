@@ -49,5 +49,5 @@ server.on("listen", () => {
     console.log("listening on " + bind);
 });
 server.listen(port, () => {
-    console.log(`App runing on port  ${port}`);
+    console.log(`App runing at http://localhost:${port}/`);
 });
