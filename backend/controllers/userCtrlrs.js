@@ -1,8 +1,7 @@
 //============================== Importations userModel , bcrypt & jwt =================================
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
-const userModel = require("../models/user");
-
+const db = require("../models");
 //============================= Regex pour vérification mail et psswrd ================================
 //Minimum huit caractères, au moins une lettre majuscule, une lettre minuscule, un chiffre et un caractère spécial
 const pwdRegex =
@@ -24,27 +23,24 @@ exports.register = (req, res) => {
         });
     }
     //Aprés vérification, je vérifie dans la bd si le user existe
-    userModel
-        .findOne({
+    db.User.findOne({
             where: { email: req.body.email },
         })
         .then((userFound) => {
             //si le user n'existe pas:j'utilise le bcrypt pour hasher avant enregistrer ds la BD
             if (!userFound) {
                 bcrypt.hash(req.body.password, 10).then((hash) => {
-                    userModel
-                        .create({
-                            email: req.body.email,
-                            password: hash,
-                            pseudo: req.body.pseudo,
-                            bio: req.body.bio,
-                            admin: 0,
-                        })
-                        .then((user) => {
-                            res.status(201).json({
-                                id: user.id,
-                            });
+                    db.User.create({
+                        email: req.body.email,
+                        password: hash,
+                        pseudo: req.body.pseudo,
+                        bio: req.body.bio,
+                        admin: 0,
+                    }).then((user) => {
+                        res.status(201).json({
+                            id: user.id,
                         });
+                    });
                 });
             } else {
                 res.status(400).json({ message: "Cet user existe déjà" });
