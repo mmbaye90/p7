@@ -48,3 +48,39 @@ exports.register = (req, res) => {
         })
         .catch((error) => res.status(500).json({ error }));
 };
+
+exports.login = (req, res) => {
+    db.User.findOne({ where: { email: req.body.email } })
+        .then((user) => {
+            if (!user) {
+                return res
+                    .status(401)
+                    .json({ message: "Cet utilisateur n'existe pas !!!" });
+            }
+            bcrypt
+                .compare(req.body.password, user.password)
+                .then((valid) => {
+                    if (!valid) {
+                        return res
+                            .status(401)
+                            .json({ message: "Mot de passe invalide !!!" });
+                    }
+                    res.status(201).json({
+                        userId: user.id,
+                        pseudo: user.pseudo,
+                        admin: user.admin,
+                        token: jwt.sign({
+                                userId: user.id,
+                            },
+                            "RANDOM_TOKEN_SECRET", { expiresIn: "1h" }
+                        ),
+                    });
+                })
+                .catch((error) => {
+                    res.status(401).json({ error });
+                });
+        })
+        .catch((error) => {
+            res.status(500).json({ error });
+        });
+};

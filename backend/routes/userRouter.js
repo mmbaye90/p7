@@ -8,5 +8,6 @@ const userCtrlrs = require("../controllers/userCtrlrs");
 
 //=================================================== Les endpoints ===========================================================
 router.post("/register", userCtrlrs.register);
+router.post("/login", userCtrlrs.login);
 //====================================================== Exportation de router ================================================
 module.exports = router;
