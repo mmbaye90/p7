@@ -86,3 +86,25 @@ exports.login = (req, res) => {
             res.status(500).json({ error });
         });
 };
+
+exports.getUserProfile = (req, res) => {
+    models
+        .findOne({
+            //Ce que je veux afficher jamais le MDP
+            attributes: ["id", "email", "pseudo", "avatar", "bio", "admin"],
+            //recherche dans la BD avec l'ID
+            where: { id: req.params.id },
+        })
+        .then((user) => {
+            if (user) {
+                res.status(201).json(user);
+            } else {
+                res
+                    .status(401)
+                    .json({ message: "Profile utilisateur non retrouvé !!!" });
+            }
+        })
+        .catch((error) => {
+            res.status(500).json({ error });
+        });
+};
