@@ -88,8 +88,7 @@ exports.login = (req, res) => {
 };
 
 exports.getUserProfile = (req, res) => {
-    models
-        .findOne({
+    models.User.findOne({
             //Ce que je veux afficher jamais le MDP
             attributes: ["id", "email", "pseudo", "avatar", "bio", "admin"],
             //recherche dans la BD avec l'ID
