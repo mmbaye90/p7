@@ -89,7 +89,7 @@ exports.login = (req, res) => {
 
 exports.getUserProfile = (req, res) => {
     models.User.findOne({
-            //Ce que je veux afficher jamais le MDP
+            //Ce que je veux afficher. Jamais le MDP // si non la req nous renvoie toutes les clefs et leur val
             attributes: ["id", "email", "pseudo", "avatar", "bio", "admin"],
             //recherche dans la BD avec l'ID
             where: { id: req.params.id },
@@ -106,4 +106,8 @@ exports.getUserProfile = (req, res) => {
         .catch((error) => {
             res.status(500).json({ error });
         });
+};
+
+exports.updateProfile = (req, res) => {
+    console.log("je suis dans le update");
 };
