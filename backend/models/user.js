@@ -9,15 +9,16 @@ module.exports = (sequelize, DataTypes) => {
          */
         static associate(models) {
             // define association here
-            models.User.hasMany(models.Message);
+            models.User.hasMany(models.Message, { onDelete: "cascade", hooks: true });
         }
     }
     User.init({
         email: DataTypes.STRING,
-        password: DataTypes.STRING,
         pseudo: DataTypes.STRING,
-        bio: DataTypes.STRING,
+        avatar: DataTypes.STRING,
+        password: DataTypes.STRING,
         admin: DataTypes.BOOLEAN,
+        bio: DataTypes.STRING,
     }, {
         sequelize,
         modelName: "User",

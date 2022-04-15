@@ -2,7 +2,7 @@
     "development": {
         "username": "root",
         "password": "azerty",
-        "database": "reseauSocial",
+        "database": "reseau_social",
         "host": "127.0.0.1",
         "dialect": "mysql"
     },

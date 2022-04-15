@@ -1,7 +1,7 @@
 //============================== Importations userModel , bcrypt & jwt =================================
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
-const db = require("../models");
+const models = require("../models");
 //============================= Regex pour vérification mail et psswrd ================================
 //Minimum huit caractères, au moins une lettre majuscule, une lettre minuscule, un chiffre et un caractère spécial
 const pwdRegex =
@@ -23,18 +23,19 @@ exports.register = (req, res) => {
         });
     }
     //Aprés vérification, je vérifie dans la bd si le user existe
-    db.User.findOne({
+    models.User.findOne({
             where: { email: req.body.email },
         })
         .then((userFound) => {
             //si le user n'existe pas:j'utilise le bcrypt pour hasher avant enregistrer ds la BD
             if (!userFound) {
                 bcrypt.hash(req.body.password, 10).then((hash) => {
-                    db.User.create({
+                    models.User.create({
                         email: req.body.email,
                         password: hash,
                         pseudo: req.body.pseudo,
                         bio: req.body.bio,
+                        avatar: req.body.avatar,
                         admin: 0,
                     }).then((user) => {
                         res.status(201).json({
@@ -50,7 +51,7 @@ exports.register = (req, res) => {
 };
 
 exports.login = (req, res) => {
-    db.User.findOne({ where: { email: req.body.email } })
+    models.User.findOne({ where: { email: req.body.email } })
         .then((user) => {
             if (!user) {
                 return res
@@ -68,6 +69,7 @@ exports.login = (req, res) => {
                     res.status(201).json({
                         userId: user.id,
                         pseudo: user.pseudo,
+                        avatar: user.avatar,
                         admin: user.admin,
                         token: jwt.sign({
                                 userId: user.id,

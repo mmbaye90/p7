@@ -15,6 +15,7 @@ module.exports = {
                     model: "Users",
                     key: "id",
                 },
+                onDelete: "CASCADE",
             },
             title: {
                 allowNull: false,
@@ -24,8 +25,8 @@ module.exports = {
                 allowNull: false,
                 type: Sequelize.STRING,
             },
-            attachement: {
-                allowNull: false,
+            attachment: {
+                allowNull: true,
                 type: Sequelize.STRING,
             },
             likes: {

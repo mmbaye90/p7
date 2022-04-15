@@ -12,21 +12,25 @@ module.exports = {
                 allowNull: false,
                 type: Sequelize.STRING,
             },
+            pseudo: {
+                allowNull: true,
+                type: Sequelize.STRING,
+            },
+            avatar: {
+                allowNull: true,
+                type: Sequelize.STRING,
+            },
             password: {
                 allowNull: false,
-                type: Sequelize.STRING,
-            },
-            pseudo: {
-                allowNull: false,
-                type: Sequelize.STRING,
-            },
-            bio: {
-                allowNull: true,
                 type: Sequelize.STRING,
             },
             admin: {
                 allowNull: false,
                 type: Sequelize.BOOLEAN,
+            },
+            bio: {
+                allowNull: true,
+                type: Sequelize.STRING,
             },
             createdAt: {
                 allowNull: false,
