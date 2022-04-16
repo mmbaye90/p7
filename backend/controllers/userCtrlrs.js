@@ -2,6 +2,7 @@
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const models = require("../models");
+const fs = require("fs");
 //============================= Regex pour vérification mail et psswrd ================================
 //Minimum huit caractères, au moins une lettre majuscule, une lettre minuscule, un chiffre et un caractère spécial
 const pwdRegex =
@@ -123,4 +124,30 @@ exports.updateProfile = (req, res) => {
             //s'il ne contient pas d'image
             bio: req.body.bio,
         };
+    models.User.findByPk(id)
+        .then((user) => {
+            const filename = user.avatar ?
+                {
+                    name: user.avatar.split("3000/")[1],
+                } :
+                {
+                    name: user.avatar,
+                };
+            fs.unlink(`images/${filename.name}`, () => {
+                models.User.update(data, {
+                    where: { id: id },
+                });
+            }).then((num) => {
+                if ((num = 1)) {
+                    res.status(201).json({ message: "Profil mis à jour avec succés" });
+                } else {
+                    res.status(401).json({ message: "Profil non mis à jour" });
+                }
+            });
+        })
+        .catch((error) => {
+            res
+                .status(500)
+                .send({ message: "Impossible de modifier l'image du profil" });
+        });
 };
