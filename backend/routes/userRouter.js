@@ -11,5 +11,6 @@ router.post("/register", userCtrlrs.register);
 router.post("/login", userCtrlrs.login);
 router.get("/profile/:id", userCtrlrs.getUserProfile);
 router.put("/profile/:id", userCtrlrs.updateProfile);
+router.delete("/profile/:id", userCtrlrs.deleteProfile);
 //====================================================== Exportation de router ================================================
 module.exports = router;

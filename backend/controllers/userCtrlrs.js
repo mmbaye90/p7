@@ -151,3 +151,7 @@ exports.updateProfile = (req, res) => {
                 .send({ message: "Impossible de modifier l'image du profil" });
         });
 };
+
+exports.deleteProfile = (req, res) => {
+    console.log("je suis dans delete");
+};
