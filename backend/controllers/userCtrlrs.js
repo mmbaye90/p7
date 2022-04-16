@@ -109,5 +109,18 @@ exports.getUserProfile = (req, res) => {
 };
 
 exports.updateProfile = (req, res) => {
-    console.log("je suis dans le update");
+    const id = req.params.id;
+    //Pour prendre en compte les deux cas de figure:
+    const data = req.file ?
+        {
+            //on traite la modification contenant une image
+            bio: req.body.bio,
+            avatar: `${req.protocol}://${req.get("host")}/images/${
+          req.file.filename
+        }`,
+        } :
+        {
+            //s'il ne contient pas d'image
+            bio: req.body.bio,
+        };
 };
