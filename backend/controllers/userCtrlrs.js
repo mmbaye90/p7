@@ -72,6 +72,7 @@ exports.login = (req, res) => {
                         pseudo: user.pseudo,
                         avatar: user.avatar,
                         admin: user.admin,
+                        bio: user.bio,
                         token: jwt.sign({
                                 userId: user.id,
                             },
@@ -101,7 +102,7 @@ exports.getUserProfile = (req, res) => {
             } else {
                 res
                     .status(401)
-                    .json({ message: "Profile utilisateur non retrouvé !!!" });
+                    .json({ message: "Profile utilisateur non retrouvé ou inexistant" });
             }
         })
         .catch((error) => {
@@ -110,76 +111,57 @@ exports.getUserProfile = (req, res) => {
 };
 
 exports.updateProfile = (req, res) => {
-    const id = req.params.id;
-    //Pour prendre en compte les deux cas de figure:
-    const data = req.file ?
+    const profilObject = req.file ?
         {
-            //on traite la modification contenant une image
-            bio: req.body.bio,
+            ...JSON.parse(req.body.user),
             avatar: `${req.protocol}://${req.get("host")}/images/${
           req.file.filename
         }`,
         } :
-        {
-            //s'il ne contient pas d'image
-            bio: req.body.bio,
-        };
-    models.User.findByPk(id)
-        .then((user) => {
-            const filename = user.avatar ?
-                {
-                    name: user.avatar.split("3000/")[1],
-                } :
-                {
-                    name: user.avatar,
-                };
-            fs.unlink(`images/${filename.name}`, () => {
-                models.User.update(data, {
-                    where: { id: id },
-                });
-            }).then((num) => {
-                if ((num = 1)) {
-                    res.status(201).json({ message: "Profil mis à jour avec succés" });
-                } else {
-                    res.status(401).json({ message: "Profil non mis à jour" });
-                }
-            });
+        {...req.body };
+    models.User.update(profilObject, { where: { id: req.params.id } })
+        .then(() => {
+            res.status(201).json({ message: "Profil Modifié" });
         })
         .catch((error) => {
-            res
-                .status(500)
-                .send({ message: "Impossible de modifier l'image du profil" });
+            res.status(400).json({ error });
         });
 };
 
 exports.deleteProfile = (req, res) => {
-    if (!req.params.id || !req.headers.authorization) {
-        res.status(400).json({ message: "Requête erronée." });
-    } else {
-        const token = jwt.getUserId(req.headers.authorization);
-        const userId = token.userId;
-
-        models.User.findOne({ where: { id: userId } })
-            .then((user) => {
-                if (user.id === userId) {
-                    const filename = user.imageUrl.split("/images/")[1];
-                    fs.unlink(`images/${filename}`, (err) => {
-                        if (err) throw err;
-                    });
-                    models.User.update({
-                            imageUrl: null,
-                            updatedAt: new Date(),
-                        }, { where: { id: user.id } })
-                        .then(() => {
-                            models.User.findOne({ where: { id: userId } })
-                                .then((user) => res.status(200).json(user))
-                                .catch((error) => res.status(404).json(error));
-                        })
-                        .catch((error) => res.status(501).json(error));
-                } else {
-                    res.status(403).json({ message: "Action non autorisée." });
-                }
-            })
-            .catch((error) => res.status(500).json(error));
-    }
+    models.User.findOne({
+            where: { id: req.params.id },
+        })
+        .then((userFound) => {
+            if (userFound) {
+                models.User.findOne({
+                        attributes: ["admin"],
+                        where: { id: req.params.id },
+                    })
+                    .then((userIsAdmin) => {
+                        // Si c'est le profil de l'utilisateur ou l'admin, on supprime le commentaire
+                        if (req.params.id == userFound.id || userIsAdmin.admin == true) {
+                            models.User.destroy({
+                                    where: { id: req.params.id },
+                                })
+                                .then(() =>
+                                    res.status(201).json({ message: "Compte supprimé" })
+                                )
+                                .catch((error) => res.status(404).json({ error }));
+                        } else {
+                            // Si ce n'est pas le profil de l'utilisateur ni l'admin qui demande la suppression
+                            // Status 403 : non autorisé
+                            res.status(403).json({
+                                error: "Vous n'êtes pas autorisé à supprimer le compte",
+                            });
+                        }
+                    })
+                    .catch((error) => res.status(404).json({ error: error }));
+            } else {
+                res.status(404).json({ error: "Profil non trouvé" });
+            }
+        })
+        .catch((error) =>
+            res.status(500).json({ error: "Impossible de supprimer le compte" })
+        );
 };
