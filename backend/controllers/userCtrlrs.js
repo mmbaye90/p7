@@ -153,5 +153,33 @@ exports.updateProfile = (req, res) => {
 };
 
 exports.deleteProfile = (req, res) => {
-    console.log("je suis dans delete");
+    if (!req.params.id || !req.headers.authorization) {
+        res.status(400).json({ message: "Requête erronée." });
+    } else {
+        const token = jwt.getUserId(req.headers.authorization);
+        const userId = token.userId;
+
+        models.User.findOne({ where: { id: userId } })
+            .then((user) => {
+                if (user.id === userId) {
+                    const filename = user.imageUrl.split("/images/")[1];
+                    fs.unlink(`images/${filename}`, (err) => {
+                        if (err) throw err;
+                    });
+                    models.User.update({
+                            imageUrl: null,
+                            updatedAt: new Date(),
+                        }, { where: { id: user.id } })
+                        .then(() => {
+                            models.User.findOne({ where: { id: userId } })
+                                .then((user) => res.status(200).json(user))
+                                .catch((error) => res.status(404).json(error));
+                        })
+                        .catch((error) => res.status(501).json(error));
+                } else {
+                    res.status(403).json({ message: "Action non autorisée." });
+                }
+            })
+            .catch((error) => res.status(500).json(error));
+    }
 };
