@@ -11,9 +11,12 @@ const bodyParser = require("body-parser");
 //Importation du module userRouter
 const userRouter = require("./routes/userRouter");
 //Importation des models
-const fichierModel = require("./models");
+const models = require("./models");
+//Importation du module messageRouter
+const messageRouter = require("./routes/messageRouter");
+
 //============================== configuration de la  BD =================================
-fichierModel.sequelize
+models.sequelize
     .authenticate()
     .then(() => {
         console.log("Connexion à la base de donnée REUSSIE");
@@ -22,6 +25,7 @@ fichierModel.sequelize
         console.error(`Connexion ECHOUEE : ${error}`);
     });
 //============================== conf middleware de express et les endpoints  ========================
+
 app.use(cors()); // autorisation d'accés à mon api à tout le monde
 app.use(helmet());
 app.use((req, res, next) => {
@@ -40,6 +44,7 @@ app.use((req, res, next) => {
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use("/api/users", userRouter); //chemin d'enregistrement et de login du user
+app.use("/api/users", messageRouter); //chemin pour poster des messages
 
 //======================  exportation de app   =====================================
 module.exports = app;
