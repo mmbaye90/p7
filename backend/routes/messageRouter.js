@@ -13,7 +13,7 @@ const multer = require("../middlewares/multer-confi");
 const auth = require("../middlewares/auth");
 
 //=================================================== Les endpoints ===========================================================
-//Inscription
+//Poster un message
 router.post("/postMessage", userCtrlrs.addMessage);
 //====================================================== Exportation de router ================================================
 module.exports = router;
