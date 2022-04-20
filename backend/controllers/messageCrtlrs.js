@@ -6,6 +6,7 @@ const jwtUtil = require("../utils/jwtUtil");
 //==================================  Les dfrtes functions =======================================
 //Création d'un message
 exports.addMessage = (req, res) => {
+    //Récupération userId dans la requête
     const userId = jwtUtil.getUserId(req.headers.authorization);
     models.User.findOne({
             attributes: ["id", "email", "pseudo"],
@@ -49,5 +50,24 @@ exports.addMessage = (req, res) => {
 
 //Lister tous les messages
 exports.getAllMessages = (req, res) => {
-    console.log("je suis dans obtenir message");
+    models.Message.findAll({
+            //Je récupére le user qui a créé le message(ici le mail)
+            include: [{
+                model: models.User,
+                attributes: ["email"],
+            }, ],
+            //J'ordonne l'affichage des messages par date de création:ordre décroissant c a d msg rec au plus ancien
+            order: [
+                ["createdAt", "DESC"]
+            ],
+        })
+        .then((posts) => {
+            //Vérification s'il ya des messages ou non
+            if (posts.length > null) {
+                res.status(200).json(posts);
+            } else {
+                res.status(404).json({ error: "Aucun message à afficher" });
+            }
+        })
+        .catch((err) => res.status(500).json(err));
 };
