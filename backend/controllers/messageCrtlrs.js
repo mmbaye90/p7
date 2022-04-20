@@ -46,3 +46,8 @@ exports.addMessage = (req, res) => {
             res.status(500).json({ error: "erreur serveur" });
         });
 };
+
+//Lister tous les messages
+exports.getAllMessages = (req, res) => {
+    console.log("je suis dans obtenir message");
+};
