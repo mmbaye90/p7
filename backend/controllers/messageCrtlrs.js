@@ -122,3 +122,8 @@ exports.update = (req, res) => {
         }
     });
 };
+
+//Suppression d'un post
+exports.deletePost = (req, res) => {
+    console.log("je suis dans deletePost");
+};
