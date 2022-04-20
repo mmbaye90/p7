@@ -19,6 +19,8 @@ router.post("/postMessage", msgCtrlrs.addMessage);
 router.get("/", msgCtrlrs.getAllMessages);
 //Afficher un seul message
 router.get("/:id", msgCtrlrs.getOneMessage);
+//Modifier un message
+router.put("/update/:id", msgCtrlrs.update);
 
 //====================================================== Exportation de router ================================================
 module.exports = router;

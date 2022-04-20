@@ -84,11 +84,41 @@ exports.getOneMessage = (req, res) => {
         })
         .then((post) => {
             if (!post) {
-                return res.status(400).json({ error: "Pas de message afficher !" });
+                return res.status(400).json({ error: "Pas de message à afficher !" });
             }
             res.status(200).json(post);
         })
         .catch((error) => {
             res.status(401).json({ error });
         });
+};
+
+//Modification d'un post
+exports.update = (req, res) => {
+    const userId = jwtUtil.getUserId(req.headers.authorization);
+
+    models.User.findOne({
+        attributes: ["id", "email", "pseudo", "admin"],
+        where: { id: userId },
+    }).then((userFound) => {
+        if (userFound.id != null || userFound.admin == true) {
+            const messageObject = req.file ?
+                {
+                    ...JSON.parse(req.body.user),
+                    attachment: `${req.protocol}://${req.get("host")}/images/${
+              req.file.filename
+            }`,
+                } :
+                {...req.body };
+            models.Message.update(messageObject, { where: { id: req.params.id } })
+                .then(() => {
+                    res.status(201).json({ message: "Message Modifié" });
+                })
+                .catch((error) => {
+                    res.status(401).json({ error: "Message non modifié" });
+                });
+        } else {
+            res.status(500).json({ error: "Erreur serveur" });
+        }
+    });
 };
