@@ -75,5 +75,20 @@ exports.getAllMessages = (req, res) => {
 
 //Afficher un seul message
 exports.getOneMessage = (req, res) => {
-    console.log("je suis dans un seul message");
+    models.Message.findOne({
+            where: { id: req.params.id },
+            include: [{
+                model: models.User,
+                attributes: ["id", "pseudo", "avatar"],
+            }, ],
+        })
+        .then((post) => {
+            if (!post) {
+                return res.status(400).json({ error: "Pas de message afficher !" });
+            }
+            res.status(200).json(post);
+        })
+        .catch((error) => {
+            res.status(401).json({ error });
+        });
 };
