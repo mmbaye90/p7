@@ -16,6 +16,9 @@ const auth = require("../middlewares/auth");
 //Poster un message
 router.post("/postMessage", msgCtrlrs.addMessage);
 //Afficher tous les messages
-router.get("/allMessage", msgCtrlrs.getAllMessages);
+router.get("/", msgCtrlrs.getAllMessages);
+//Afficher un seul message
+router.get("/:id", msgCtrlrs.getOneMessage);
+
 //====================================================== Exportation de router ================================================
 module.exports = router;

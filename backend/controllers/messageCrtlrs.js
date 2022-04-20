@@ -49,6 +49,7 @@ exports.addMessage = (req, res) => {
 };
 
 //Lister tous les messages
+//Pour le moment sans les commentaires associés
 exports.getAllMessages = (req, res) => {
     models.Message.findAll({
             //Je récupére le user qui a créé le message(ici le mail)
@@ -63,11 +64,16 @@ exports.getAllMessages = (req, res) => {
         })
         .then((posts) => {
             //Vérification s'il ya des messages ou non
-            if (posts.length > null) {
+            if (posts.length != null) {
                 res.status(200).json(posts);
             } else {
                 res.status(404).json({ error: "Aucun message à afficher" });
             }
         })
         .catch((err) => res.status(500).json(err));
+};
+
+//Afficher un seul message
+exports.getOneMessage = (req, res) => {
+    console.log("je suis dans un seul message");
 };
