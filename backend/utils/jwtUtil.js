@@ -2,18 +2,14 @@ const jwt = require("jsonwebtoken");
 
 module.exports = {
     getUserId: function(data) {
-        if (data !== null) {
+        if (data.length > 1) {
+            let token = data.split(" ")[1];
             try {
-                let token;
-
-                if (data.split(" ").length > 1) {
-                    token = jwt.verify(data.split(" ")[1], "RANDOM_TOKEN_SECRET");
-                } else {
-                    token = jwt.verify(data, "RANDOM_TOKEN_SECRET");
-                }
-                return token;
+                let decodedToken = jwt.verify(token, "RANDOM_TOKEN_SECRET");
+                userId = decodedToken.userId;
+                return userId;
             } catch (err) {
-                return err.message;
+                return err;
             }
         }
     },
