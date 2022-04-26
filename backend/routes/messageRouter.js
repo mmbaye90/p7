@@ -14,15 +14,15 @@ const auth = require("../middlewares/auth");
 
 //=================================================== Les endpoints ===========================================================
 //Poster un message
-router.post("/postMessage", msgCtrlrs.addMessage);
+router.post("/postMessage", auth, msgCtrlrs.addMessage);
 //Afficher tous les messages
-router.get("/", msgCtrlrs.getAllMessages);
+router.get("/", auth, msgCtrlrs.getAllMessages);
 //Afficher un seul message
-router.get("/:id", msgCtrlrs.getOneMessage);
+router.get("/:id", auth, msgCtrlrs.getOneMessage);
 //Modifier un message
-router.put("/update/:id", msgCtrlrs.update);
+router.put("/update/:id", auth, msgCtrlrs.update);
 //Supprimer un message
-router.delete("/delete/:id", msgCtrlrs.deletePost);
+router.delete("/delete/:id", auth, msgCtrlrs.deletePost);
 
 //====================================================== Exportation de router ================================================
 module.exports = router;
