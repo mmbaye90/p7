@@ -22,7 +22,10 @@ router.get("/:id", auth, msgCtrlrs.getOneMessage);
 //Modifier un message
 router.put("/update/:id", auth, msgCtrlrs.update);
 //Supprimer un message
-router.delete("/delete/:id", auth, msgCtrlrs.deletePost);
+router.delete("/delete/:id", auth, msgCtrlrs.addLikeMessage);
+
+//Ajouter un Like à un message
+router.post("/:id/likes", auth, msgCtrlrs.addLikeMessage);
 
 //====================================================== Exportation de router ================================================
 module.exports = router;

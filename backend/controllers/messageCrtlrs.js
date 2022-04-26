@@ -180,3 +180,8 @@ exports.deletePost = (req, res) => {
         })
         .catch(() => res.status(500).json({ error: "erreur serveur" }));
 };
+
+//Ajouter un like à un Message
+exports.addLikeMessage = (req, res) => {
+    console.log("je suis dans LIKE");
+};
