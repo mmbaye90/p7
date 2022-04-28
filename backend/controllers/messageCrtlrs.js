@@ -183,5 +183,67 @@ exports.deletePost = (req, res) => {
 
 //Ajouter un like à un Message
 exports.addLikeMessage = (req, res) => {
-    console.log("je suis dans LIKE");
+    //ON vérifie si l'utilisateur et le message aimé
+    const userId = jwtUtil.getUserId(req.headers.authorization);
+    const messageId = parseInt(req.params.id);
+
+    //Vérif du côté de la bd de la validité du messageId
+    if (messageId <= 0) {
+        return res.status(401).json({ message: "L'id du message est invalide" });
+    }
+    //On vérifie si le message existe dans la DB
+    models.Message.findOne({ where: { id: messageId } })
+        .then((msgFound) => {
+            if (msgFound) {
+                //une fois le msg trouvé,on cherche le user
+                models.User.findOne({
+                        attributes: ["id", "email", "pseudo"],
+                        where: { id: userId },
+                    })
+                    .then((userFound) => {
+                        if (msgFound && userFound) {
+                            models.Like.findOne({
+                                    where: {
+                                        userId: userId,
+                                        messageId: messageId,
+                                    },
+                                })
+                                .then((userLikedMessage) => {
+                                    if (!userLikedMessage) {
+                                        //ici on ajoute la relation qui unie le msgà l'utilisateur
+                                        msgFound
+                                            .addUser(userFound)
+                                            .then((likeFound) => {
+                                                likes: likeFound.likes;
+                                            })
+                                            .catch(() => {
+                                                res
+                                                    .status(401)
+                                                    .json({
+                                                        message: "Impossible à obtenirle like du user",
+                                                    });
+                                            });
+                                    } else {
+                                        return res
+                                            .status(409)
+                                            .json({ message: "Message déjà liké" });
+                                    }
+                                })
+                                .catch(() => {
+                                    res
+                                        .status(401)
+                                        .json({
+                                            message: "Impossible de vérifier si l'utilisateur a liké",
+                                        });
+                                });
+                        }
+                    })
+                    .catch(() => {
+                        res.status(401).json({ message: "User not Found" });
+                    });
+            }
+        })
+        .catch(() => {
+            res.status(401).json({ message: "Message non trouvé dans la BD" });
+        });
 };
