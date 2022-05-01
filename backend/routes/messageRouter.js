@@ -26,6 +26,8 @@ router.delete("/delete/:id", auth, msgCtrlrs.addLikeMessage);
 
 //Ajouter un Like à un message
 router.post("/:id/likes", auth, msgCtrlrs.addLikeMessage);
+//Ajouter un dislike
+router.post("/:id/dislikes", auth, msgCtrlrs.dislikePost);
 
 //====================================================== Exportation de router ================================================
 module.exports = router;

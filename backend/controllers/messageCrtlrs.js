@@ -243,8 +243,10 @@ exports.addLikeMessage = (req, res) => {
                                         .update({
                                             likes: cancel,
                                         })
-                                        .then(() => {
-                                            res.status(204).json({ message: "Vote annulé" });
+                                        .then((voteAnnule) => {
+                                            console.log(
+                                                `Vote annulé retour à zéro ===> ${voteAnnule.likes}`
+                                            );
                                         });
                                 }
                             }
@@ -262,4 +264,8 @@ exports.addLikeMessage = (req, res) => {
         .catch((error) => {
             res.status(500).json({ error });
         });
+};
+
+exports.dislikePost = (req, res) => {
+    console.log("Je suis dans Like");
 };
