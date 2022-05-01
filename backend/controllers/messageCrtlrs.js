@@ -266,6 +266,75 @@ exports.addLikeMessage = (req, res) => {
         });
 };
 
+//Fonction dislike
 exports.dislikePost = (req, res) => {
-    console.log("Je suis dans Like");
+    const userId = jwtUtil.getUserId(req.headers.authorization);
+    const messageId = parseInt(req.params.id);
+
+    const cancel = 0;
+
+    if (messageId <= 0) {
+        return res.status(401).json({ message: "L'id du message est invalide" });
+    }
+    models.Message.findOne({ where: { id: messageId } })
+        .then((messageFound) => {
+            if (messageFound) {
+                console.log(messageFound.likes);
+                models.User.findOne({
+                    attributes: ["id", "email", "pseudo", "admin"],
+                    where: { id: userId },
+                }).then((userFound) => {
+                    if (userFound) {
+                        models.Like.findOne({
+                            where: {
+                                userId: userId,
+                                messageId: messageId,
+                            },
+                        }).then((userLiked) => {
+                            if (!userLiked) {
+                                messageFound.addUser(userFound).then((msgandUser) => {
+                                    console.log(msgandUser);
+                                    messageFound
+                                        .update({
+                                            likes: messageFound.likes - 1,
+                                        })
+                                        .then((voteMessage) => {
+                                            res
+                                                .status(201)
+                                                .json(`Post disLiké ==>  ${voteMessage.likes}`);
+                                        });
+                                });
+                            } else {
+                                if (userLiked) {
+                                    models.Like.destroy({
+                                        where: {
+                                            UserId: userId,
+                                            messageId: messageId,
+                                        },
+                                    }, { truncate: true });
+                                    messageFound
+                                        .update({
+                                            likes: cancel,
+                                        })
+                                        .then((voteAnnule) => {
+                                            console.log(
+                                                `Dislike annulé retour à zéro ===> ${voteAnnule.likes}`
+                                            );
+                                        });
+                                }
+                            }
+                        });
+                    } else {
+                        return res.status(401).json({ message: "User not found" });
+                    }
+                });
+            } else {
+                return res
+                    .status(401)
+                    .json({ message: "Message non trouvé dans la BD" });
+            }
+        })
+        .catch((error) => {
+            res.status(500).json({ error });
+        });
 };
