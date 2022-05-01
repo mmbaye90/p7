@@ -187,63 +187,79 @@ exports.addLikeMessage = (req, res) => {
     const userId = jwtUtil.getUserId(req.headers.authorization);
     const messageId = parseInt(req.params.id);
 
+    //La constante pour gérer  le cancel d'un vote (retour en arriere du like)
+    //ça permettrait de gérer plus facilement avec le front plus tard
+    const cancel = 0;
+
     //Vérif du côté de la bd de la validité du messageId
     if (messageId <= 0) {
         return res.status(401).json({ message: "L'id du message est invalide" });
     }
-    //On vérifie si le message existe dans la DB
+    //On vérifie si le message à liker existe dans la DB
     models.Message.findOne({ where: { id: messageId } })
-        .then((msgFound) => {
-            if (msgFound) {
-                //une fois le msg trouvé,on cherche le user
+        .then((messageFound) => {
+            if (messageFound) {
+                console.log(messageFound.likes);
+                //On cherche le user qui veut liker le message
                 models.User.findOne({
-                        attributes: ["id", "email", "pseudo"],
-                        where: { id: userId },
-                    })
-                    .then((userFound) => {
-                        if (msgFound && userFound) {
-                            models.Like.findOne({
-                                    where: {
-                                        userId: userId,
-                                        messageId: messageId,
-                                    },
-                                })
-                                .then((userLikedMessage) => {
-                                    if (!userLikedMessage) {
-                                        //ici on ajoute la relation qui unie le msgà l'utilisateur
-                                        msgFound
-                                            .addUser(userFound)
-                                            .then((likeFound) => {
-                                                likes: likeFound.likes;
-                                            })
-                                            .catch(() => {
-                                                res
-                                                    .status(401)
-                                                    .json({
-                                                        message: "Impossible à obtenirle like du user",
-                                                    });
-                                            });
-                                    } else {
-                                        return res
-                                            .status(409)
-                                            .json({ message: "Message déjà liké" });
-                                    }
-                                })
-                                .catch(() => {
-                                    res
-                                        .status(401)
-                                        .json({
-                                            message: "Impossible de vérifier si l'utilisateur a liké",
+                    attributes: ["id", "email", "pseudo", "admin"],
+                    where: { id: userId },
+                }).then((userFound) => {
+                    if (userFound) {
+                        //Une fois le message et le user trouvé ds la BD,on vérif s'ils snt prsnts ds la table like
+                        //on pourra déterminer si le user à liker un msg ou non
+                        models.Like.findOne({
+                            where: {
+                                userId: userId,
+                                messageId: messageId,
+                            },
+                        }).then((userLiked) => {
+                            //S'il n'y a pas de msg et de user
+                            if (!userLiked) {
+                                messageFound.addUser(userFound).then((msgandUser) => {
+                                    //on crée d'un tuple avec la méthode addUser sur la table Like
+                                    console.log(msgandUser);
+                                    //Une fois cette crétion de ligne ,on procéde au vote
+                                    messageFound
+                                        .update({
+                                            likes: messageFound.likes + 1,
+                                        })
+                                        .then((voteMessage) => {
+                                            res
+                                                .status(201)
+                                                .json(`Post Liké ==>  ${voteMessage.likes}`);
                                         });
                                 });
-                        }
-                    })
-                    .catch(() => {
-                        res.status(401).json({ message: "User not Found" });
-                    });
+                            } else {
+                                //Si on trouve un msg et un user on procéde à la sup du tuple ds la table Like et on annule le vote
+                                if (userLiked) {
+                                    models.Like.destroy({
+                                        where: {
+                                            UserId: userId,
+                                            messageId: messageId,
+                                        },
+                                    }, { truncate: true });
+                                    messageFound
+                                        .update({
+                                            likes: cancel,
+                                        })
+                                        .then(() => {
+                                            res.status(204).json({ message: "Vote annulé" });
+                                        });
+                                }
+                            }
+                        });
+                    } else {
+                        return res.status(401).json({ message: "User not found" });
+                    }
+                });
+            } else {
+                return res
+                    .status(401)
+                    .json({ message: "Message non trouvé dans la BD" });
             }
         })
-        .catch(() => {
-            res.status(401).json({ message: "Message non trouvé dans la BD" });
+        .catch((error) => {
+            res.status(500).json({ error });
         });
 };
