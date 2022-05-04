@@ -1,11 +1,11 @@
 import React from 'react';
 
-const index = () => {
+const Signin = () => {
     return (
         <div>
-            
+            Je suis ds inscription
         </div>
     );
 };
 
-export default index;
+export default Signin;

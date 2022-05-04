@@ -1,11 +1,11 @@
 import React from 'react';
 
-const Trending = () => {
+const NotFound = () => {
     return (
         <div>
-            Trending
+            NotFound page
         </div>
     );
 };
 
-export default Trending;
+export default NotFound;
