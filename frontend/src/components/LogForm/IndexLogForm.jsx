@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import Login from './Login';
 import Signin from './Signin';
-
-const Index = () => {
-    const [signinModal,setSigninModal] = useState(true)
-    const [logModal,setLogModal] = useState(false)
+import "./stylesLogForm/indexLogForm.css"
+const IndexLogForm = (props) => {
+    const [signinModal,setSigninModal] = useState(props.register)
+    const [logModal,setLogModal] = useState(props.login)
 
 
     const handleModals =(e)=>{
@@ -22,8 +22,12 @@ const Index = () => {
         <div className="connectionForm">
             <div className="formContainer">
                 <ul>
-                    <li onClick={handleModals} id ="register">S'inscrire</li>
-                    <li onClick={handleModals} id ="login">Login</li>
+                    <li onClick={handleModals} id ="register"
+                    className={signinModal ? "active-btn" : null}
+                    >S'inscrire</li>
+                    <li onClick={handleModals} id ="login"
+                    className={logModal ? "active-btn" : null}
+                    >Login</li>
                 </ul>
                 {signinModal && <Signin/>}
                 {logModal && <Login/>}
@@ -32,4 +36,4 @@ const Index = () => {
     );
 };
 
-export default Index;
+export default IndexLogForm;
