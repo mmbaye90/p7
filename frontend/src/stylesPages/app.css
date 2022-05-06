@@ -7,3 +7,7 @@
 *::selection {
     background-color: rosybrown;
 }
+
+.router {
+    border: 7px solid crimson;
+}
