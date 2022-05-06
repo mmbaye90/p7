@@ -53,9 +53,10 @@ const Login = () => {
           value={password}
         />
         <br />
-        <div className="errLog"></div>
-        <br />
         <input type="submit" value="Se connecter" />
+        <br />
+        <div className="errLog"></div>
+
       </form>
     );};
 
