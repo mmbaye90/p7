@@ -7,30 +7,26 @@ const SignInForm = () => {
   
   const handleLogin = (e) => {
     e.preventDefault();
-    const emailError = document.querySelector(".email.error");
-    const passwordError = document.querySelector(".password.error");
-
+    const errorRegister = document.querySelector(".errinscription");
     axios({
       method: "post",
-      url: `${process.env.REACT_APP_API_URL}api/user/login`,
-      withCredentials: true,
+      url: "http://localhost:3000/api/users/login",
       data: {
         email,
         password,
       },
+
     })
-      .then((res) => {
-        console.log(res);
-        if (res.data.errors) {
-          emailError.innerHTML = res.data.errors.email;
-          passwordError.innerHTML = res.data.errors.password;
-        } else {
-          window.location = "/";
-        }
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    .then((res) => {
+      console.log(res);
+      if (res) {
+        window.location = "/";
+      } 
+    })
+    .catch((err) => {
+      console.log(err.response.data.message);
+      errorRegister.innerHTML = err.response.data.message;          
+    });
   };
 
   return (
@@ -58,7 +54,9 @@ const SignInForm = () => {
       />
       <div className="password error"></div>
       <br />
-      <input type="submit" value="Se connecter" />
+      <input type="submit" value="Se connecter" id="validation" />
+      <br />
+      <div className="errinscription"></div>
     </form>
   );
 };

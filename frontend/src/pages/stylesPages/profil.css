@@ -1,5 +1,6 @@
 .profil-page {
     display: flex;
     justify-content: center;
-    background-color: azure;
+    background: #504e4e;
+    color: #18dcff;
 }
