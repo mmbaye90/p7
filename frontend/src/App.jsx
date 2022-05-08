@@ -1,13 +1,9 @@
-import "../src/stylesPages/app.css";
-import Routes from "./components/Routes/IndexRoutes"
-
-
+import React from 'react';
+import Routes from "./components/Routes";
 const App = () => {
   return (
-    <>
-      <Routes />
-    </>
-  )
-    };
+    <Routes/>
+  );
+};
 
 export default App;
