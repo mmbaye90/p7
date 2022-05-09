@@ -6,7 +6,6 @@ const jwtUtil = require("../utils/jwtUtil");
 //==================================  Les dfrtes functions =======================================
 //Création d'un message
 exports.addMessage = (req, res) => {
-    //Récupération userId dans la requête
     const userId = jwtUtil.getUserId(req.headers.authorization);
     models.User.findOne({
             attributes: ["id", "email", "pseudo"],

@@ -18,9 +18,9 @@ exports.register = (req, res) => {
     }
     if (!pwdRegex.test(req.body.password)) {
         return res.status(400).json({
-            message: `le mot de passe doit contenir 
-        au minimun huit caractères, au moins une lettre majuscule,
-        une lettre minuscule, un chiffre et un caractère spécial`,
+            message: `MDP doit contenir 
+        au minimun 8 caractères, au moins 1 majuscule,
+        1 minuscule, 1 chiffre et 1 caractère spécial`,
         });
     }
     //Aprés vérification, je vérifie dans la bd si le user existe
