@@ -4,9 +4,12 @@ import axios from "axios";
 const SignInForm = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  
+
+
+
   const handleLogin = (e) => {
     e.preventDefault();
+    e.stopPropagation()
     const errorRegister = document.querySelector(".errinscription");
     axios({
       method: "post",
@@ -18,9 +21,9 @@ const SignInForm = () => {
 
     })
     .then((res) => {
-      console.log(res);
+      console.log(res.data.userId);
       if (res) {
-        window.location = "/";
+        window.location = "/home";
       } 
     })
     .catch((err) => {

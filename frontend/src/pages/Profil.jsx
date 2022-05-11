@@ -3,11 +3,13 @@ import "./stylesPages/profil.css"
 const Profil = () => {
 
   return (
+    <>
     <div className="profil-page">
         <div className="log-container">
           <LogForm signin={false} signup={true} />
         </div>
     </div>
+    </>
   );
 };
 

@@ -1,6 +1,10 @@
 .profil-page {
+    background-image: url(../../img/icon-left-font.png);
+    background-repeat: no-repeat;
+    background-position-x: 50%;
+    background-position-y: -100%;
     display: flex;
     justify-content: center;
-    background: #504e4e;
     color: #18dcff;
+    height: 100vh;
 }

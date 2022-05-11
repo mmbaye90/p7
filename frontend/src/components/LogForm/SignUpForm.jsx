@@ -37,13 +37,12 @@ const SignUpForm = () => {
     return (
       <>
         {formSubmit ? (
-          <>
+          <div className="containerSucces">
             <h4>
               Enregistrement réussi, veuillez-vous connecter
             </h4>
             <SignInForm />
-            
-          </>
+          </div>
         ) : (
           <form action="" onSubmit={handleRegister} id="sign-up-form">
             <h1>Inscription</h1>

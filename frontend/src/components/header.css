@@ -1,0 +1,8 @@
+.header {
+    height: 10vh;
+    /* display: flex;
+    justify-content: center;
+    align-items: center; */
+    border-bottom: 3px solid #ff4500;
+    background: #363434;
+}
