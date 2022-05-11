@@ -1,5 +1,6 @@
 //============================== Importations userModel , bcrypt & jwt =================================
 const jwt = require("jsonwebtoken");
+const jwtUtil = require("../utils/jwtUtil");
 const bcrypt = require("bcrypt");
 const models = require("../models");
 const fs = require("fs");
@@ -66,19 +67,22 @@ exports.login = (req, res) => {
                         return res
                             .status(401)
                             .json({ message: "Mot de passe invalide !!!" });
-                    }
-                    res.status(201).json({
-                        userId: user.id,
-                        pseudo: user.pseudo,
-                        avatar: user.avatar,
-                        admin: user.admin,
-                        bio: user.bio,
-                        token: jwt.sign({
+                    } else {
+                        const token = jwt.sign({
                                 userId: user.id,
                             },
                             "RANDOM_TOKEN_SECRET", { expiresIn: "24h" }
-                        ),
-                    });
+                        );
+                        res.cookie("jwt", token);
+                        res.status(201).json({
+                            userId: user.id,
+                            pseudo: user.pseudo,
+                            avatar: user.avatar,
+                            admin: user.admin,
+                            bio: user.bio,
+                            token: token,
+                        });
+                    }
                 })
                 .catch((error) => {
                     res.status(401).json({ error });

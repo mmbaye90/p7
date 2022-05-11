@@ -24,6 +24,7 @@
         "nodemon": "^2.0.15"
     },
     "devDependencies": {
+        "cookie-parser": "^1.4.6",
         "mysql": "^2.18.1",
         "sequelize": "^6.17.0"
     }

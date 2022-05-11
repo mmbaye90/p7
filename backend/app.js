@@ -12,11 +12,8 @@ const userRouter = require("./routes/userRouter");
 const models = require("./models");
 //Importation du module messageRouter
 const messageRouter = require("./routes/messageRouter");
-//Importation de jwutil
-const jwtUtil = require("./utils/jwtUtil");
-//Importation Auth
+const cookieParser = require("cookie-parser");
 const auth = require("./middlewares/auth");
-
 //============================== configuration de la  BD =================================
 models.sequelize
     .authenticate()
@@ -46,9 +43,9 @@ app.use((req, res, next) => {
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(cookieParser());
 app.get("/jwtid", auth, (req, res) => {
-    const userId = jwtUtil.getUserId(req.headers.authorization);
-    res.status(200).json(userId);
+    res.status(200).json(res.locals.userId);
 });
 app.use("/api/users", userRouter); //chemin d'enregistrement et de login du user
 app.use("/api/users", messageRouter); //chemin pour poster des messages
