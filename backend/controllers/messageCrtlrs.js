@@ -31,6 +31,7 @@ exports.addMessage = (req, res) => {
                             UserId: user.id,
                         })
                         .then((newMsg) => {
+                            console.log(newMsg);
                             res.status(201).json(newMsg);
                         })
                         .catch((err) => {

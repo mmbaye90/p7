@@ -73,7 +73,6 @@ exports.login = (req, res) => {
                             },
                             "RANDOM_TOKEN_SECRET", { expiresIn: "24h" }
                         );
-                        res.cookie("jwt", token);
                         res.status(201).json({
                             userId: user.id,
                             pseudo: user.pseudo,

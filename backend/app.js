@@ -14,6 +14,9 @@ const models = require("./models");
 const messageRouter = require("./routes/messageRouter");
 const cookieParser = require("cookie-parser");
 const auth = require("./middlewares/auth");
+
+//Importation path pour uploader une image
+const path = require("path");
 //============================== configuration de la  BD =================================
 models.sequelize
     .authenticate()
@@ -49,6 +52,7 @@ app.get("/jwtid", auth, (req, res) => {
 });
 app.use("/api/users", userRouter); //chemin d'enregistrement et de login du user
 app.use("/api/users", messageRouter); //chemin pour poster des messages
+app.use("/images", express.static(path.join(__dirname, "images")));
 
 //======================  exportation de app   =====================================
 module.exports = app;

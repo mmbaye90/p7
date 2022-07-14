@@ -14,7 +14,7 @@ const auth = require("../middlewares/auth");
 
 //=================================================== Les endpoints ===========================================================
 //Poster un message
-router.post("/postMessage", auth, msgCtrlrs.addMessage);
+router.post("/postMessage", auth, multer, msgCtrlrs.addMessage);
 //Afficher tous les messages
 router.get("/", auth, msgCtrlrs.getAllMessages);
 //Afficher un seul message
