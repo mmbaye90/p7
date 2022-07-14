@@ -24,11 +24,11 @@ const Navbar = () => {
               Accueil
             </NavLink>
           </li>
-          <li className="nav-item">
+          {/* <li className="nav-item">
             <NavLink className="nav-link" to="/posts"activeClassName="active">
               Posts
             </NavLink>
-          </li>
+          </li> */}
         </ul>
         <ul className="ul2">
           { (!isAuthenticated && (
