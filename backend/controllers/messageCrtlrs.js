@@ -29,9 +29,9 @@ exports.addMessage = (req, res) => {
                             content: req.body.content,
                             attachment: attachment,
                             UserId: user.id,
+                            likes: req.body.likes,
                         })
                         .then((newMsg) => {
-                            console.log(newMsg);
                             res.status(201).json(newMsg);
                         })
                         .catch((err) => {

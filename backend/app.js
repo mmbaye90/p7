@@ -51,7 +51,7 @@ app.get("/jwtid", auth, (req, res) => {
     res.status(200).json(res.locals.userId);
 });
 app.use("/api/users", userRouter); //chemin d'enregistrement et de login du user
-app.use("/api/users", messageRouter); //chemin pour poster des messages
+app.use("/api/messages", messageRouter); //chemin pour poster des messages
 app.use("/images", express.static(path.join(__dirname, "images")));
 
 //======================  exportation de app   =====================================

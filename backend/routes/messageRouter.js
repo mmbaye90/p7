@@ -16,7 +16,7 @@ const auth = require("../middlewares/auth");
 //Poster un message
 router.post("/postMessage", auth, multer, msgCtrlrs.addMessage);
 //Afficher tous les messages
-router.get("/", auth, msgCtrlrs.getAllMessages);
+router.get("/", msgCtrlrs.getAllMessages);
 //Afficher un seul message
 router.get("/:id", auth, msgCtrlrs.getOneMessage);
 //Modifier un message

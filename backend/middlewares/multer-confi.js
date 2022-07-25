@@ -27,6 +27,7 @@ const storage = multer.diskStorage({
 
 //Exportation du fichier configuration avec la methode single qui gére uniquement les fichers images
 module.exports = multer({ storage: storage }).single("image");
+
 // const multer = require("multer");
 
 // const MIME_TYPES = {

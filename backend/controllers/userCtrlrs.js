@@ -29,7 +29,7 @@ exports.register = (req, res) => {
             where: { email: req.body.email },
         })
         .then((userFound) => {
-            //si le user n'existe pas:j'utilise le bcrypt pour hasher avant enregistrer ds la BD
+            //si le user n'existe pas dans la BD:j'utilise le bcrypt pour hasher avant enregistrer ds la BD
             if (!userFound) {
                 bcrypt.hash(req.body.password, 10).then((hash) => {
                     models.User.create({
